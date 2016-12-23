@@ -27,7 +27,7 @@ tags = ["Image", "Picture", "processing", "enhancement"]
 categories = ["Tools And Libraries"]
 +++
 
-Let's face it: Pictures taken with a smartphone usually aren't quite like Anselm Adams masterpieces. But with a little post-processing, some of them might still reveal their true beauty. A couple of Go libraries can help.
+Let's face it: Pictures taken with a smartphone usually aren't quite like Ansel Adams masterpieces. But with a little post-processing, some of them might still reveal their true beauty. A couple of Go libraries can help.
 
 <!--more-->
 
