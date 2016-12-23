@@ -33,9 +33,15 @@ Let's face it: Pictures taken with a smartphone usually aren't quite like Ansel 
 
 Almost all of the posts on AppliedGo.net so far are about applying Go to various problem domains and building a basic implementation from scratch. Today's post is a bit different. I picked a goal - processing an image - and searched for Go libraries to help me with that job. These are the libraries I will be using here:
 
-* [`muesli/smartcrop`](https://github.com/muesli/smartcrop)
+* [`artyom/smartcrop`](https://github.com/artyom/smartcrop)
 * [`anthonynsimon/bild`](https://github.com/anthonynsimon/bild)
 * [`fogleman/primitive`](https://github.com/fogleman/primitive)
+
+- - -
+
+**Update:** `artyom/smartcrop` is replacing `muesli/smartcrop` that was used for the previous version of this article. `artyom/smartcrop` is a fork of `muesli/smartcrop` with no external dependencies and a simpler API.
+
+- - -
 
 And last not least, the `image` package from the Go standard library.
 
@@ -58,8 +64,8 @@ import (
 	"github.com/anthonynsimon/bild/blend"
 	"github.com/anthonynsimon/bild/effect"
 	"github.com/anthonynsimon/bild/transform"
+	"github.com/artyom/smartcrop"
 	"github.com/fogleman/primitive/primitive"
-	"github.com/muesli/smartcrop"
 	"github.com/pkg/errors"
 
 	//...and the rest.
@@ -121,7 +127,7 @@ func saveImage(img image.Image, pname, fname string) error {
 
 ## Smartcrop
 
-The test image has quite some space around the Red Kite with nothing interesting to see. So let's crop the image. But not manually; instead, let `smartcrop` do the job. `smartcrop` attempts to detect the most interesting part of an image. It uses opencv and thus relies on a couple of external dependencies. If you want to run the code of this post at your end, ensure to follow the installation instructions at [muesli/smartcrop](https://github.com/muesli/smartcrop).
+The test image has quite some space around the Red Kite with nothing interesting to see. So let's crop the image. But not manually; instead, let `smartcrop` do the job. `smartcrop` attempts to detect the most interesting part of an image.
 
 Note that Smartcrop can use face recognition for finding the right crop. Obviously, we cannot use this feature here on the bird picture, so we switch it off.
 
@@ -143,11 +149,9 @@ type SubImager interface {
 // `crop` auto-crops the image in-place.
 func crop(img image.Image, width, height int) (image.Image, error) {
 
-	// The Smartcrop analyzer receives an Image and the desired target width and height, and returns the best crop it finds.
-	analyzer := smartcrop.NewAnalyzerWithCropSettings(smartcrop.CropSettings{FaceDetection: false})
-	crop, err := analyzer.FindBestCrop(img, width, height)
+	rect, err := smartcrop.Crop(img, width, height)
 	if err != nil {
-		return nil, errors.Wrap(err, "SmartCrop failed")
+		return nil, errors.Wrap(err, "Smartcrop failed")
 	}
 
 	// Now let's crop the image to the suggested area.
@@ -156,19 +160,17 @@ func crop(img image.Image, width, height int) (image.Image, error) {
 	if !ok {
 		return nil, errors.New("crop(): img does not support SubImage()")
 	}
-	// Then, we can turn `smartcrop.Crop` into an `image.Rectangle` and pass this to `SubImage()`. Note that the returned sub-image shares pixels with the original image, so make a copy if you want to manipulate only the sub-image.
-	subImg := si.SubImage(image.Rect(crop.X, crop.Y, crop.X+crop.Width, crop.Y+crop.Height))
+	// Then we pass the cropping borders to `SubImage()`. Note that the returned sub-image shares pixels with the original image, so make a copy if you want to manipulate only the sub-image.
+	subImg := si.SubImage(rect)
 
 	return subImg, nil
 }
 
 /*
 
-The result is not too bad! The algorithm found the interesting part of the image, although I would have put the bird to the right of the center, as it looks to the left - but hey, the algorithm is not specialized on analyzing birds, so the result is entirely ok.
+The result is not too bad! The algorithm found the interesting part of the image, although I would have put the bird a tad bit more towards the center. But hey, that's an automated algorithm that is certainly not specialized for identifying birds, so the result is perfectly ok.
 
 ![Smartcrop result](cropped.jpg)
-
-Still, for the rest of the processing steps, I'll use a slightly adjusted version.
 
 
 ## bild
@@ -192,7 +194,7 @@ func saturate(img image.Image) image.Image {
 /*
 Before:
 
-![Cropped Manually](croppedManually.jpg)
+![Cropped Manually](cropped.jpg)
 
 After:
 
@@ -308,7 +310,7 @@ func main() {
 	}
 
 	// Let's continue with a manually cropped image.
-	img, err = openImage("manuallyCropped.jpg")
+	img, err = openImage("cropped.jpg")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -354,4 +356,11 @@ Find more libaries and tools at -
 This is the last post for this year. Enjoy the holidays! See you again in January.
 
 Until then, happy coding!
+
+
+- - -
+
+Changelog
+
+2016-12-23: Replaced `muesli/smartcrop` by `artyom/smartcrop`.
 */
