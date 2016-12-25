@@ -345,7 +345,7 @@ func main() {
 
 /*
 
-Get the full code from GitHub:
+Get the full code from [GitHub](github.com/appliedgo/imageprocessing):
 
 ```
 go get -d github.com/appliedgo/imageprocessing
