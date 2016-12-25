@@ -194,7 +194,7 @@ func saturate(img image.Image) image.Image {
 /*
 Before:
 
-![Cropped Manually](cropped.jpg)
+![Cropped](cropped.jpg)
 
 After:
 
@@ -344,6 +344,15 @@ func main() {
 }
 
 /*
+
+Get the full code from GitHub:
+
+```
+go get -d github.com/appliedgo/imageprocessing
+cd $GOPATH/src/github.com/appliedgo/imageprocessing
+go run imageprocessing.go
+```
+
 ## Odds and Ends
 
 I planned to include a section on halftoning; however, I quickly found that although code is available, it is not a library - at least not yet. So I invite you to head over to [Halftoning with Go - Part 1](https://maxhalford.github.io/blog/halftoning-1/), which is a very intersting read about halftoning and dithering, starting with average dithering and ending with the Floyd-Steinberg algorithm.
@@ -363,4 +372,6 @@ Until then, happy coding!
 Changelog
 
 2016-12-23: Replaced `muesli/smartcrop` by `artyom/smartcrop`.
+
+2016-12-24: Added missing steps for getting the source code
 */
