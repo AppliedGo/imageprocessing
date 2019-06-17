@@ -22,9 +22,9 @@ email = "chris@appliedgo.net"
 date = "2016-12-22"
 publishdate = "2016-12-22"
 draft = "false"
-domains = ["Image Processing"]
+categories = ["Image Processing"]
 tags = ["Image", "Picture", "processing", "enhancement"]
-categories = ["Tools And Libraries"]
+articletypes = ["Tools And Libraries"]
 +++
 
 Let's face it: Pictures taken with a smartphone usually aren't quite like Ansel Adams masterpieces. But with a little post-processing, some of them might still reveal their true beauty. A couple of Go libraries can help.
